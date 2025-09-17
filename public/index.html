@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Properties Management System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-hotel me-2"></i>Hotel PMS Login
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="loginUsername" class="form-label">Username or Email</label>
+                            <input type="text" class="form-control" id="loginUsername" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </button>
+                        </div>
+                    </form>
+                    <hr>
+                    <div class="text-center">
+                        <small class="text-muted">
+                            Demo credentials: admin / admin123
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app" style="display: none;">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#dashboard">
+                    <i class="fas fa-hotel me-2"></i>Hotel PMS
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#dashboard" data-section="dashboard">
+                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#reservations" data-section="reservations">
+                                <i class="fas fa-calendar-check me-1"></i>Reservations
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#rooms" data-section="rooms">
+                                <i class="fas fa-bed me-1"></i>Rooms
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#guests" data-section="guests">
+                                <i class="fas fa-users me-1"></i>Guests
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#billing" data-section="billing">
+                                <i class="fas fa-receipt me-1"></i>Billing
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-1"></i><span id="currentUser">User</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="logout()">
+                                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                                </a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container-fluid mt-4">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="content-section">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="mb-4">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 id="totalRooms">0</h4>
+                                        <small>Total Rooms</small>
+                                    </div>
+                                    <i class="fas fa-bed fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 id="availableRooms">0</h4>
+                                        <small>Available Rooms</small>
+                                    </div>
+                                    <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 id="occupiedRooms">0</h4>
+                                        <small>Occupied Rooms</small>
+                                    </div>
+                                    <i class="fas fa-user fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 id="currentGuests">0</h4>
+                                        <small>Current Guests</small>
+                                    </div>
+                                    <i class="fas fa-users fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-calendar-check me-2"></i>Recent Reservations
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Guest</th>
+                                                <th>Room</th>
+                                                <th>Check-in</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recentReservations">
+                                            <!-- Dynamic content -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-chart-line me-2"></i>Quick Actions
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary" onclick="showSection('reservations'); showNewReservationModal()">
+                                        <i class="fas fa-plus me-2"></i>New Reservation
+                                    </button>
+                                    <button class="btn btn-success" onclick="showSection('guests'); showNewGuestModal()">
+                                        <i class="fas fa-user-plus me-2"></i>Add Guest
+                                    </button>
+                                    <button class="btn btn-info" onclick="showSection('rooms')">
+                                        <i class="fas fa-eye me-2"></i>View Room Status
+                                    </button>
+                                    <button class="btn btn-warning" onclick="showSection('billing')">
+                                        <i class="fas fa-receipt me-2"></i>Billing Overview
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reservations Section -->
+            <div id="reservations-section" class="content-section" style="display: none;">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2>
+                                <i class="fas fa-calendar-check me-2"></i>Reservations
+                            </h2>
+                            <button class="btn btn-primary" onclick="showNewReservationModal()">
+                                <i class="fas fa-plus me-2"></i>New Reservation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <select class="form-select" id="reservationStatusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="checked_in">Checked In</option>
+                            <option value="checked_out">Checked Out</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" class="form-control" id="reservationDateFilter" placeholder="Filter by date">
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-primary" onclick="loadReservations()">
+                            <i class="fas fa-filter me-2"></i>Filter
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Reservations Table -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Guest</th>
+                                        <th>Room</th>
+                                        <th>Check-in</th>
+                                        <th>Check-out</th>
+                                        <th>Status</th>
+                                        <th>Total</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reservationsTable">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rooms Section -->
+            <div id="rooms-section" class="content-section" style="display: none;">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2>
+                                <i class="fas fa-bed me-2"></i>Room Management
+                            </h2>
+                            <div>
+                                <button class="btn btn-success me-2" onclick="showNewRoomModal()">
+                                    <i class="fas fa-plus me-2"></i>Add Room
+                                </button>
+                                <button class="btn btn-info" onclick="showRoomTypesModal()">
+                                    <i class="fas fa-cog me-2"></i>Room Types
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Room Status Filter -->
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <select class="form-select" id="roomStatusFilter">
+                            <option value="">All Rooms</option>
+                            <option value="available">Available</option>
+                            <option value="occupied">Occupied</option>
+                            <option value="maintenance">Maintenance</option>
+                            <option value="cleaning">Cleaning</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-primary" onclick="loadRooms()">
+                            <i class="fas fa-filter me-2"></i>Filter
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Rooms Grid -->
+                <div id="roomsGrid" class="row">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+
+            <!-- Guests Section -->
+            <div id="guests-section" class="content-section" style="display: none;">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2>
+                                <i class="fas fa-users me-2"></i>Guest Management
+                            </h2>
+                            <button class="btn btn-primary" onclick="showNewGuestModal()">
+                                <i class="fas fa-user-plus me-2"></i>Add Guest
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="guestSearch" placeholder="Search guests...">
+                            <button class="btn btn-outline-primary" onclick="searchGuests()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guests Table -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>City</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="guestsTable">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Billing Section -->
+            <div id="billing-section" class="content-section" style="display: none;">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="mb-4">
+                            <i class="fas fa-receipt me-2"></i>Billing & Payments
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- Bills Table -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Bill ID</th>
+                                        <th>Guest</th>
+                                        <th>Room</th>
+                                        <th>Total Amount</th>
+                                        <th>Paid Amount</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="billsTable">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS and custom JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/modals.js"></script>
+</body>
+</html>
